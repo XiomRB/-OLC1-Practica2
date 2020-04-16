@@ -1,0 +1,72 @@
+#principal{
+    width:  95%;
+    height: 95%;
+    border: 1px solid #fff;
+    margin: auto;
+}
+header{
+    width:  95%;
+    height: 7%;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+.area{
+    margin-left: 2.5%;
+}
+a{
+    text-align: center;
+    text-decoration: none;
+}
+#writer{
+    width:705px;
+    height: 360px;
+    float: left;
+}
+#var{
+    overflow: scroll;
+    width:705px;
+    height: 360px;
+    float: left;
+}
+.cabecera{
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px;
+}
+.pestaña{
+    position: absolute;
+    border: 2px solid white;
+    height: 90%;
+    margin:auto;
+    visibility: hidden;
+}
+.p-activa{
+    visibility: visible;
+    opacity: 1;
+}
+table{
+    background-color: rgb(134, 197, 218);
+}
+.boton{
+    display: inline-block;
+    background-color: rgb(31, 115, 194);
+    color:white;
+    border:1px solid  rgb(5, 49, 172);
+    width: 25%;
+    padding: 1%;
+    margin-right: 3%;
+    margin-left: 3%;
+}
+.file{
+    visibility: hidden;
+}
+#variables{
+    margin: auto;
+    width: 90%;
+    border-top: 1px solid;
+    border-left: 1px solid;
+}
+td,th{
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+}
