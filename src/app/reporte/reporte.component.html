@@ -1,0 +1,16 @@
+<div>
+    <table>
+        <tr>
+            <th>Tipo de Error</th>
+            <th>Linea</th>
+            <th>Columna</th>
+            <th>Descripcion</th>
+        </tr>
+        <tr *ngFor="let e of errores">
+            <td>{{e.tipo}}</td>
+            <td>{{e.linea}}</td>
+            <td>{{e.col}}</td>
+            <td>{{e.descripcion}}</td>
+        </tr>
+    </table>
+</div>

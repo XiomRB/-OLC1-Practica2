@@ -8,9 +8,9 @@
         <div id = "writer">
             <textarea name="tab" class ="area" id="tab"rows = "20" cols = "90" [(ngModel)] = "fileContent"></textarea>
             <div>
-                <button (click)="traducir()" class="boton">Traducir</button>
-                <button (click)="generarHJ()" class="boton">Generar HTML/JSON</button>
-                <button class="boton">Reportar Errores</button>
+                <a href="#" (click)="traducir()" class="boton">Traducir</a>
+                <a href="#" (click)="generarHJ()" class="boton">Generar HTML/JSON</a>
+                <a (click) = "generarreporte()" href="#" class="boton">Reportar Errores</a>
             </div>
         </div>
         <div id = "var">
@@ -23,18 +23,21 @@
                 <tr *ngFor = "let variable of accion.sintactico.variables" ><td>{{variable.nombre}}</td><td>{{variable.tipo}}</td><td>{{variable.line}}</td></tr>
             </table>
         </div>
-        <div id="writer">
+        <div id="writer" [hidden] = "ocultar">
             <textarea name="traducido" class ="area" id="tab" rows = "20" cols = "90" readonly>{{area1}}</textarea>
         </div>
-        <div id="writer">
+        <div id="writer" [hidden] = "ocultar">
             <a href="#" (click) = "ocultarJ()" class = "cabecera">HTML</a>
-                <a href="#" (click) ="ocultarH()" class = "cabecera">JSON</a>
-                <div class = "pestaña" [hidden] = "ocultarHTML" >
-                    <textarea class ="area" name ="ht" rows = "17" cols = "90" readonly [(ngModel)] ="area2"></textarea>
-                </div>
-                <div [hidden] = "ocultarJSON" class = "pestaña">
-                    <textarea class = "area" name ="js" rows = "17" readonly cols = "90"[(ngModel)] ="area3"></textarea>
-                </div>
+            <a href="#" (click) ="ocultarH()" class = "cabecera">JSON</a>
+            <div class = "pestaña" [hidden] = "ocultarHTML" >
+                <textarea class ="area" name ="ht" rows = "17" cols = "90" readonly [(ngModel)] ="area2"></textarea>
+            </div>
+            <div [hidden] = "ocultarJSON" class = "pestaña">
+                <textarea class = "area" name ="js" rows = "17" readonly cols = "90"[(ngModel)] ="area3"></textarea>
+            </div>
+        </div>
+        <div [hidden]="ocultarerror">
+            <app-reporte [errores] = "errores"></app-reporte>
         </div>
     </form>
 </div>

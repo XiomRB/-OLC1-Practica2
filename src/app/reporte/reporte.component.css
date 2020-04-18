@@ -1,0 +1,17 @@
+table{
+    background-color: rgb(134, 197, 218);
+    margin: auto;
+    width: 90%;
+    border-top: 1px solid;
+    border-left: 1px solid;
+}
+td,th{
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+}
+div{
+    width:705px;
+    height: 360px;
+    float: left;
+    overflow: scroll;
+}
