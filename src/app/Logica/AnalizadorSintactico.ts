@@ -19,6 +19,7 @@ export class Sintactico{
         while(this.cadenas.length!=0) this.cadenas.pop()
         while(this.errores.length!=0) this.errores.pop()
         while(this.variables.length!=0) this.variables.pop()
+        this.lexico.limpiar()
     }
     parser(texto:string){
         this.lexico.analizar(texto);

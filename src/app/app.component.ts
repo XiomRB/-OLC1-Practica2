@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Accion } from './Logica/Accion';
 
 @Component({
@@ -12,11 +12,15 @@ export class AppComponent {
   fileContent: string = '';
 
   area1:string="";
-  area2:String="";
-  
+  area2:string="";
+  area3:string=""
+  ocultarJSON:boolean = true
+  ocultarHTML:boolean = false
+
   limpiar(){
     this.area1 = "";
     this.area2 = "";
+    this.area3 = ""
     this.accion.sintactico.limpiar()
   }
 
@@ -25,7 +29,6 @@ export class AppComponent {
     if(this.fileContent.length!=0){
       this.accion.sintactico.parser(this.fileContent);
       if(this.accion.sintactico.errores.length==0){
-        this.area1 += this.accion.sintactico.cadenas.length + "\n"
         this.accion.sintactico.cadenas.forEach(element => {
           this.area1 += element + "\n";
         });
@@ -33,8 +36,25 @@ export class AppComponent {
     }
   }
 
+  ocultarJ(){
+    this.ocultarHTML = false
+    this.ocultarJSON = true
+  }
+
+  ocultarH(){
+    this.ocultarHTML = true
+    this.ocultarJSON = false
+  }
+
   generarHJ(){
-    
+    this.area2 = ""
+    if(this.accion.sintactico.lexico.tokens.length!=0){
+      if(this.accion.sintactico.errores.length==0){
+        this.accion.crearHTML()
+        this.area2 += this.accion.htmlfinal
+        this.area3 += this.accion.jsonfinal
+      }
+    }
   }
 
   generarreporte(){
@@ -43,7 +63,7 @@ export class AppComponent {
         
       });
       this.accion.sintactico.errores.forEach(error=>{
-        
+
       })
     }
   }

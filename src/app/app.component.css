@@ -38,11 +38,6 @@ a{
     border: 2px solid white;
     height: 90%;
     margin:auto;
-    visibility: hidden;
-}
-.p-activa{
-    visibility: visible;
-    opacity: 1;
 }
 table{
     background-color: rgb(134, 197, 218);

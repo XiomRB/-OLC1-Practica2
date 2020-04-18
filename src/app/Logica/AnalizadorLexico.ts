@@ -161,7 +161,7 @@ export class Lexico{
                 case 9:
                     if(ctr == 39){
                         if(this.token.length==1 || this.token.length == 2)this.validar(true,this.token + caracter,line,col,Tipo.caracter);
-                        else this.validar(true,this.token,line,col,Tipo.cadHTML);
+                        else this.validar(true,this.token + caracter,line,col,Tipo.cadHTML);
                     }else this.token += caracter;
                     break;
                 case 10:

@@ -9,7 +9,7 @@
             <textarea name="tab" class ="area" id="tab"rows = "20" cols = "90" [(ngModel)] = "fileContent"></textarea>
             <div>
                 <button (click)="traducir()" class="boton">Traducir</button>
-                <button class="boton">Generar HTML/JSON</button>
+                <button (click)="generarHJ()" class="boton">Generar HTML/JSON</button>
                 <button class="boton">Reportar Errores</button>
             </div>
         </div>
@@ -27,13 +27,13 @@
             <textarea name="traducido" class ="area" id="tab" rows = "20" cols = "90" readonly>{{area1}}</textarea>
         </div>
         <div id="writer">
-            <a href="#" class = "cabecera">HTML</a>
-                <a href="#" class = "cabecera">JSON</a>
-                <div class = "p-activa">
-                    <textarea class ="area" name ="ht" rows = "17" cols = "90" readonly>{{area2}}</textarea>
+            <a href="#" (click) = "ocultarJ()" class = "cabecera">HTML</a>
+                <a href="#" (click) ="ocultarH()" class = "cabecera">JSON</a>
+                <div class = "pestaña" [hidden] = "ocultarHTML" >
+                    <textarea class ="area" name ="ht" rows = "17" cols = "90" readonly [(ngModel)] ="area2"></textarea>
                 </div>
-                <div class = "pestaña">
-                    <textarea class = "area" name ="js" rows = "17" readonly cols = "90"></textarea>
+                <div [hidden] = "ocultarJSON" class = "pestaña">
+                    <textarea class = "area" name ="js" rows = "17" readonly cols = "90"[(ngModel)] ="area3"></textarea>
                 </div>
         </div>
     </form>
