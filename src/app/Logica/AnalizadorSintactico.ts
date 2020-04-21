@@ -121,6 +121,7 @@ export class Sintactico{
             case Tipo.not:
                 this.match(Tipo.not);
                 this.exp();
+                break;
             case Tipo.cadena:
                 this.match(Tipo.cadena)
                 break;
@@ -180,13 +181,13 @@ export class Sintactico{
                 this.opexp()
                 break;
             case Tipo.or:
-                this.traduccion += " || ";
+                this.traduccion += " or ";
                 this.match(Tipo.or);
                 this.exp()
                 this.opexp()
                 break;
             case Tipo.and:
-                this.traduccion += " && ";
+                this.traduccion += " and ";
                 this.match(Tipo.and);
                 this.exp()
                 this.opexp()

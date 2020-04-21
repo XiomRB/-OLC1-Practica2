@@ -10,7 +10,7 @@ export class AppComponent {
   title:string = 'TraductorPython';
   accion:Accion = new Accion();
   fileContent: string = '';
-  fileName:string = "traduccion"
+  fileName:string = "traduccion.cs"
 
   area1:string="";
   area2:string="";
@@ -27,6 +27,10 @@ export class AppComponent {
     this.area3 = ""
     this.accion.sintactico.limpiar()
     while(this.errores.length!=0)this.errores.pop()
+  }
+
+  guardarArchivo(){
+    this.accion.guardarArchivo(this.fileName,"",this.fileContent)
   }
 
   cambiaroculto(){
@@ -47,13 +51,13 @@ export class AppComponent {
   traducir(){
     this.limpiar()
     this.cambiaroculto()
-    console.log(this.ocultarerror)
     if(this.fileContent.length!=0){
       this.accion.sintactico.parser(this.fileContent);
       if(this.accion.sintactico.errores.length==0){
         this.accion.sintactico.cadenas.forEach(element => {
           this.area1 += element + "\n";
         });
+        this.accion.guardarArchivo(this.fileName.substr(0,this.fileName.length-3),".py",this.area1)
       }else this.area1 = "No se pudo generar la traduccion, la entrada contiene errores";
     }
   }

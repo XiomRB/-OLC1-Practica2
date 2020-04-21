@@ -2,7 +2,7 @@
     <header>
         <label class="boton" for="abrir">Abrir archivo</label>
         <input type="file" id="abrir" class="file" (change)="onChange($event.target.files)"/>
-        <a href="" class="boton" >Guardar</a>
+        <a href="" (click) = "guardarArchivo()" class="boton" >Guardar</a>
     </header>
     <form action="">
         <div id = "writer">

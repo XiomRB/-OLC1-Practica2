@@ -18,6 +18,7 @@ export class Accion{
         let h:number = 1;
         this.sintactico.lexico.tokens.forEach(tok => {
             if(tok.tipo==Tipo.cadHTML){
+                this.mal = false
                 this.mal = this.traducirHTML(tok.lexema.substr(1,tok.lexema.length-2))
                 if(!this.mal){
                     this.guardarArchivo("html" +h,".html",this.html)
@@ -25,14 +26,12 @@ export class Accion{
                     this.htmlfinal += this.html + "\n"
                     this.jsonfinal += this.json + "\n"
                     h++
+                }else{
+                    this.htmlfinal += "No se pudo generar el HTML, se encontro un error en la cadena" + h + "\n"
+                    this.jsonfinal += "No se pudo generar el JSON, se encontro un error en la cadena" + h + "\n"
                 }
-                this.mal = false
             }
         });
-    }
-
-    crearJSON(h:string){
-
     }
 
     guardarArchivo(name:string,extension:string,cuerpo:string){
@@ -59,6 +58,9 @@ export class Accion{
                 else if(cad == "<button") this.mal = this.button(cadena)
                 else if(cad == "<p") this.mal = this.p(cadena)
                 else if(cad == "<h1") this.mal = this.h1(cadena)
+                else if(cad == "<h2") this.mal = this.h2(cadena)
+                else if(cad == "<h3") this.mal = this.h3(cadena)
+                else if(cad == "<h4") this.mal = this.h4(cadena)
                 else if(cad == "<label") this.mal = this.label(cadena)
                 else return true
             }else{
@@ -86,11 +88,14 @@ export class Accion{
                     if(cad == "<br")this.mal = this.br(cadena)
                     else if(cad == "<head") this.mal = this.head(cadena)
                     else if(cad == "<body") this.mal = this.body(cadena)
-                    else if(cad == "<div>") this.mal = this.div(cadena)
+                    else if(cad == "<div") this.mal = this.div(cadena)
                     else if(cad == "<input") this.mal =  this.input(cadena)
                     else if(cad == "<button") this.mal =  this.button(cadena)
                     else if(cad == "<p") this.mal =  this.p(cadena)
                     else if(cad == "<h1") this.mal = this.h1(cadena)
+                    else if(cad == "<h2") this.mal = this.h2(cadena)
+                    else if(cad == "<h3") this.mal = this.h3(cadena)
+                    else if(cad == "<h4") this.mal = this.h4(cadena)
                     else if(cad == "<label") this.mal = this.label(cadena)
                     else return true
                 } else{
@@ -102,7 +107,7 @@ export class Accion{
             if(this.i >= cadena.length || this.mal) return true
             else{
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
-                this.html += "\n</html>\n"
+                this.html += "</html>\n"
                 this.json += "}\n"
                 this.i+= 7
                 return false
@@ -121,7 +126,7 @@ export class Accion{
             }else if(cadena.substr(this.i,5)=="title" || cadena.substr(this.i,5)=="label" || cadena.substr(this.i,5)=="input"){
                 cad += cadena.substr(this.i,5)
                 this.i+=5
-            }else if(cadena.substr(this.i,2)=="br" || cadena.substr(this.i,2)=="h1"){
+            }else if(cadena.substr(this.i,2)=="br" || cadena.substr(this.i,2)=="h1" || cadena.substr(this.i,2)=="h2" || cadena.substr(this.i,2)=="h3" || cadena.substr(this.i,2)=="h4"){
                 cad += cadena.substr(this.i,2)
                 this.i+=2
             }else if(cadena.charAt(this.i)=="p"){
@@ -156,7 +161,7 @@ export class Accion{
                     }
                     if(this.i >= cadena.length) return true
                     else{
-                        this.html += "</title>"
+                        this.html += "</title>\n"
                         this.json += "\"\n"
                         this.i += 8
                     }
@@ -166,7 +171,7 @@ export class Accion{
             if(this.i == cadena.length) return true
             else{
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
-                this.html += this.tabjson + "\n</head>\n"
+                this.html += this.tabjson + "</head>\n"
                 this.json += this.tabjson + "}\n"
                 this.i += 7
                 return false
@@ -174,13 +179,71 @@ export class Accion{
         }return true
     }
 
+    etiquetarStyle(cadena:string){
+        let cad:string =""
+        while(cadena.charAt(this.i)!=">" && this.i < cadena.length){
+            if(cadena.substr(this.i,5)=="style"){
+                this.i+=5
+                if(cadena.charAt(this.i)=="="){
+                    this.i++
+                    if(cadena.charAt(this.i)=="\""){
+                        this.i++
+                        if(cadena.substr(this.i,11)=="background:"){
+                            this.i += 11
+                            if(cadena.substr(this.i,8) == "skyblue\""){
+                                this.i += 8
+                                cad = " style = \"backgroud:skyblue\"STYLE: \"backgroud: skyblue\",\n"
+                            }else if(cadena.substr(this.i,4)=="red\""){
+                                this.i += 4
+                                cad = " style = \"backgroud:red\"STYLE: \"backgroud: red\",\n"
+                            }else if(cadena.substr(this.i,7)=="yellow\""){
+                                cad = " style = \"backgroud:yellow\"STYLE: \"backgroud: yellow\",\n"
+                                this.i += 7
+                            }else if(cadena.substr(this.i,6)=="green\"" || cadena.substr(this.i,6)=="white\""){
+                                cad = " style = \"backgroud: " + cadena.substr(this.i,6) +"STYLE: \"backgroud: " +cadena.substr(this.i,6) +",\n"
+                                this.i += 6
+                            }else if(cadena.substr(this.i,5)=="blue\""){
+                                cad = " style = \"backgroud:blue\"STYLE: \"backgroud: blue\",\n"
+                                this.i += 5
+                            }else return "mal"
+                        }else return "mal"
+                    }else if(cadena.charAt(this.i)==" ")this.i++
+                    else return "mal"
+                }else if(cadena.charAt(this.i)==" ")this.i++
+                else return "mal"
+            }else if(cadena.charAt(this.i)==" ")this.i++
+            else return "mal"
+        }
+        if(this.i < cadena.length){
+            if(cadena.charAt(this.i) == ">")return cad
+            else return "mal"
+        }else return "mal"
+    }
     body(cadena:string){
-        if(cadena.charAt(this.i) == ">"){
-            this.i++
-            this.html += this.tabjson + "<body>\n"
-            this.json += this.tabjson + "BODY:{\n"
-            this.tabjson += "     "
-            while(cadena.substr(this.i,7) != "</body>" && this.i < cadena.length && !this.mal){
+        let estilo:string = this.etiquetarStyle(cadena)
+        if(estilo == "mal") return true
+        else {
+            if(cadena.charAt(this.i) == ">"){
+                this.i++
+                if(estilo==""){
+                    this.html += this.tabjson + "<body>\n"
+                    this.json += this.tabjson + "BODY:{\n"
+                }else{
+                    let s:number = 0;
+                    this.html += this.tabjson + "<body "
+                    this.json += this.tabjson + "BODY:{\n" + this.tabjson + "     "
+                    while(estilo.charAt(s)!="S"){
+                        this.html += estilo.charAt(s)
+                        s++
+                    }
+                    while(s < estilo.length){
+                        this.json += estilo.charAt(s)
+                        s++
+                    }
+                    this.html += ">\n"
+                }
+                this.tabjson += "     "
+                while(cadena.substr(this.i,7) != "</body>" && this.i < cadena.length && !this.mal){
                     let cad:string = this.encontrarEtiqueta(cadena)
                     if(cad.length!=0){
                         if(cad == "<div") this.mal = this.div(cadena)
@@ -189,57 +252,83 @@ export class Accion{
                         else if(cad == "<button") this.mal = this.button(cadena)
                         else if(cad == "<label") this.mal = this.label(cadena)
                         else if(cad == "<h1") this.mal = this.h1(cadena)
+                        else if(cad == "<h2") this.mal = this.h2(cadena)
+                        else if(cad == "<h3") this.mal = this.h3(cadena)
+                        else if(cad == "<h4") this.mal = this.h4(cadena)
                         else return true
                     }else {
                         this.i++
                         if(cadena.charAt(this.i)==" " && this.i< cadena.length)this.i++
                         else return true
                     }
-            }
-            if(this.mal)return true
-            if(this.i == cadena.length)return true
-            else{
-                this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
-                this.html += this.tabjson + "\n</body>\n"
-                this.json += this.tabjson + "}\n"
-                this.i+=7
-                return false
-            }
-        }else true
+                }
+                if(this.mal)return true
+                if(this.i == cadena.length)return true
+                else{
+                    this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
+                    this.html += this.tabjson + "</body>\n"
+                    this.json += this.tabjson + "}\n"
+                    this.i+=7
+                    return false
+                }
+            }else true
+        }
     }
 
     div(cadena:string){
+        let estilo:string = this.etiquetarStyle(cadena)
+        if(estilo == "mal") return true
+        else {
         if(cadena.charAt(this.i)== ">"){
-            this.html +=this.tabjson + "<div>\n"
-            this.json += this.tabjson + "DIV:{\n"
             this.i++
-            this.tabjson += "     "
-            while(cadena.substr(this.i,6) != "</div>" && this.i < cadena.length && !this.mal){
-                let cad:string = this.encontrarEtiqueta(cadena)
-                if(cad.length!=0){
-                    if(cad == "<div") this.mal = this.div(cadena)
-                    else if(cad == "<p") this.mal = this.p(cadena)
-                    else if(cad == "<input") this.mal = this.input(cadena)
-                    else if(cad == "<button") this.mal = this.button(cadena)
-                    else if(cad == "<label") this.mal = this.label(cadena)
-                    else if(cad == "<h1") this.mal = this.h1(cadena)
-                    else return true
-                }else {
-                    this.i++
-                    if(cadena.charAt(this.i)==" "&& this.i<cadena.length)  this.i++
-                    else return true
+            if(estilo==""){
+                this.html += this.tabjson + "<div>\n"
+                this.json += this.tabjson + "DIV:{\n"
+            }else{
+                let s:number = 0;
+                this.html += this.tabjson + "<div "
+                this.json += this.tabjson + "DIV:{\n" + this.tabjson + "     "
+                while(estilo.charAt(s)!="S"){
+                    this.html += estilo.charAt(s)
+                    s++
                 }
+                while(s < estilo.length){
+                    this.json += estilo.charAt(s)
+                    s++
+                }
+                this.html += ">\n"
             }
-            if(this.mal) return true
-            if(this.i == cadena.length) return true
-            else{
-                this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
-                this.html+= this.tabjson + "</div>\n"
-                this.json += this.tabjson + "}\n"
-                this.i += 6
-                return false
-            }
-        }else true 
+            this.tabjson += "     "
+                while(cadena.substr(this.i,6) != "</div>" && this.i < cadena.length && !this.mal){
+                    let cad:string = this.encontrarEtiqueta(cadena)
+                    if(cad.length!=0){
+                        if(cad == "<div") this.mal = this.div(cadena)
+                        else if(cad == "<p") this.mal = this.p(cadena)
+                        else if(cad == "<input") this.mal = this.input(cadena)
+                        else if(cad == "<button") this.mal = this.button(cadena)
+                        else if(cad == "<label") this.mal = this.label(cadena)
+                        else if(cad == "<h1") this.mal = this.h1(cadena)
+                        else if(cad == "<h2") this.mal = this.h2(cadena)
+                        else if(cad == "<h3") this.mal = this.h3(cadena)
+                        else if(cad == "<h4") this.mal = this.h4(cadena)
+                        else return true
+                    }else {
+                        this.i++
+                        if(cadena.charAt(this.i)==" "&& this.i<cadena.length)  this.i++
+                        else return true
+                    }
+                }
+                if(this.mal) return true
+                if(this.i == cadena.length) return true
+                else{
+                    this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
+                    this.html+= this.tabjson + "</div>\n"
+                    this.json += this.tabjson + "}\n"
+                    this.i += 6
+                    return false
+                }
+            }else true 
+        }
     }
 
     p(cadena:string){
@@ -253,7 +342,7 @@ export class Accion{
                 if(cadena.substr(this.i,4) == "<br>"){
                     this.html += "<br>"
                     if(cad.length != 0){
-                        this.json += this.tabjson + "TEXTO: \"" + cad +"\"\n"
+                        this.json += this.tabjson + "TEXTO: \"" + cad +"\",\n"
                         cad = ""
                     }
                     this.json += this.tabjson + "BR:{\n" + this.tabjson + "}\n"
@@ -267,7 +356,7 @@ export class Accion{
             if(this.i == cadena.length)return true
             else{
                 if(cad.length!=0){
-                    this.json += this.tabjson + "TEXTO: \"" + cad +"\"\n"
+                    this.json += this.tabjson + "TEXTO: \"" + cad +"\",\n"
                     cad = ""
                 }
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
@@ -300,7 +389,7 @@ export class Accion{
                 cad = this.encontrarEtiqueta(cadena)
                 if(cad.length>0){
                     if(j.length != 0){
-                        this.json += this.tabjson + "TEXTO:\"" + j +"\"\n"
+                        this.json += this.tabjson + "TEXTO:\"" + j +"\",\n"
                         j = "TEXTO: \""
                     }
                     if(cad == "<br") this.mal = this.br(cadena)
@@ -315,7 +404,7 @@ export class Accion{
             if(this.mal) return true
             if(this.i == cadena.length) return true
             else{
-                if(j.length != 0) this.json += this.tabjson + j + "\"\n"
+                if(j.length != 0) this.json += this.tabjson + j + "\",\n"
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
                 this.json += this.tabjson + "}\n"
                 this.html += this.tabjson + "</input>\n"
@@ -343,7 +432,7 @@ export class Accion{
             }
             if(this.i == cadena.length) return true
             else{
-                this.json += "\"\n"
+                this.json += "\",\n"
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
                 this.html += "</button>\n"
                 this.json += this.tabjson + "}\n"
@@ -371,7 +460,7 @@ export class Accion{
             }
             if(this.i == cadena.length) return true
             else{
-                this.json += "\"\n"
+                this.json += "\",\n"
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
                 this.html+= "</label>\n"
                 this.json += this.tabjson + "}\n"
@@ -399,9 +488,93 @@ export class Accion{
             }
             if(this.i == cadena.length) return true
             else{
-                this.json += "\"\n"
+                this.json += "\",\n"
                 this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
                 this.html+= "</h1>\n"
+                this.json += this.tabjson + "}\n"
+                this.i += 5
+                return false
+            }
+        }else return true
+    }
+
+    h2(cadena:string){
+        let cad:string = ""
+        if(cadena.charAt(this.i)==">"){
+            this.html += this.tabjson + "<h2>"
+            this.json += this.tabjson + "H2:{\n"
+            this.tabjson += "     "
+            this.i++
+            this.json += this.tabjson + "TEXTO: \""
+            while(cadena.substr(this.i,5) != "</h2>" && this.i<cadena.length){
+                cad = this.encontrarEtiqueta(cadena)
+                if(cad.length == 0){
+                    this.json+= cadena.charAt(this.i)
+                    this.html += cadena.charAt(this.i)
+                    this.i++
+                }else return true
+            }
+            if(this.i == cadena.length) return true
+            else{
+                this.json += "\",\n"
+                this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
+                this.html+= "</h2>\n"
+                this.json += this.tabjson + "}\n"
+                this.i += 5
+                return false
+            }
+        }else return true
+    }
+
+    h3(cadena:string){
+        let cad:string = ""
+        if(cadena.charAt(this.i)==">"){
+            this.html += this.tabjson + "<h3>"
+            this.json += this.tabjson + "H3:{\n"
+            this.tabjson += "     "
+            this.i++
+            this.json += this.tabjson + "TEXTO: \""
+            while(cadena.substr(this.i,5) != "</h3>" && this.i<cadena.length){
+                cad = this.encontrarEtiqueta(cadena)
+                if(cad.length == 0){
+                    this.json+= cadena.charAt(this.i)
+                    this.html += cadena.charAt(this.i)
+                    this.i++
+                }else return true
+            }
+            if(this.i == cadena.length) return true
+            else{
+                this.json += "\",\n"
+                this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
+                this.html+= "</h3>\n"
+                this.json += this.tabjson + "}\n"
+                this.i += 5
+                return false
+            }
+        }else return true
+    }
+
+    h4(cadena:string){
+        let cad:string = ""
+        if(cadena.charAt(this.i)==">"){
+            this.html += this.tabjson + "<h4>"
+            this.json += this.tabjson + "H4:{\n"
+            this.tabjson += "     "
+            this.i++
+            this.json += this.tabjson + "TEXTO: \""
+            while(cadena.substr(this.i,5) != "</h4>" && this.i<cadena.length){
+                cad = this.encontrarEtiqueta(cadena)
+                if(cad.length == 0){
+                    this.json+= cadena.charAt(this.i)
+                    this.html += cadena.charAt(this.i)
+                    this.i++
+                }else return true
+            }
+            if(this.i == cadena.length) return true
+            else{
+                this.json += "\",\n"
+                this.tabjson = this.tabjson.substr(0,this.tabjson.length-5)
+                this.html+= "</h4>\n"
                 this.json += this.tabjson + "}\n"
                 this.i += 5
                 return false
